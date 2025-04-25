@@ -6,7 +6,7 @@ resource "kubernetes_service" "webapp-service" {
     }
   spec {
     selector = {
-     name = "webapp" 
+     app = "webapp" 
     }
     port {
       port = 8080
@@ -26,11 +26,16 @@ resource "kubernetes_deployment" "frontend" {
   }
   spec {
     replicas = 4
+    selector {
+      match_labels = {
+        app = "webapp"
+      }
+    }
     template {
         metadata {
           name = "webapp"
           labels = {
-            "name" = "webapp"
+            "app" = "webapp"
           }
         }
       spec {
