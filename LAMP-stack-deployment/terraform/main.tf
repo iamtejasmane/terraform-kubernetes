@@ -1,10 +1,10 @@
 # PHP image
 resource "docker_image" "php-httpd-image" {
-  name = "php-httpd:challenge"
+  name = "php-httpd"
   build {
-    path = "lamp_stack/php_httpd"
+    path = "stack/php_httpd"
     label = {
-      challenge = "second"
+      stack = "lamp"
     }
   }
 }
@@ -12,11 +12,11 @@ resource "docker_image" "php-httpd-image" {
 # MariaDB image
 
 resource "docker_image" "mariadb-image" {
-  name = "mariadb:challenge"
+  name = "mariadb"
   build {
-    path = "lamp_stack/custom_db"
+    path = "stack/db"
     label = {
-      challenge = "second"
+      stack = "lamp"
     }
   }
 }
@@ -25,10 +25,10 @@ resource "docker_image" "mariadb-image" {
 resource "docker_container" "php-httpd" {
   name     = "webserver"
   hostname = "php-httpd"
-  image    = "php-httpd:challenge"
+  image    = "php-httpd"
   labels {
-    label = "challenge"
-    value = "second"
+    label = "stack"
+    value = "lamp"
   }
   network_mode = "my_network"
   ports {
@@ -37,7 +37,7 @@ resource "docker_container" "php-httpd" {
   }
 
   volumes {
-    host_path = "/root/code/terraform-challenges/challenge2/lamp_stack/website_content/"
+    host_path      = "LAMP-stack-deployment/stack/app/"
     container_path = "/var/www/html"
   }
 
@@ -49,15 +49,15 @@ resource "docker_container" "phpmyadmin" {
   hostname = "phpmyadmin"
   image    = "phpmyadmin/phpmyadmin"
   labels {
-    label = "challenge"
-    value = "second"
+    label = "stack"
+    value = "lamp"
   }
   network_mode = "my_network"
   ports {
     external = "8081"
     internal = "80"
   }
-  depends_on = [ docker_container.mariadb ]
+  depends_on = [docker_container.mariadb]
   # deprecated
   links = ["db", "db_dashboard"]
 
@@ -67,10 +67,10 @@ resource "docker_container" "phpmyadmin" {
 resource "docker_container" "mariadb" {
   name     = "db"
   hostname = "db"
-  image    = "mariadb:challenge"
+  image    = "mariadb:stack"
   labels {
-    label = "challenge"
-    value = "second"
+    label = "stack"
+    value = "lamp"
   }
   network_mode = "my_network"
   ports {
@@ -92,10 +92,10 @@ resource "docker_volume" "mariadb_volume" {
 }
 
 resource "docker_network" "private_network" {
-  name = "my_network"
+  name       = "my_network"
   attachable = true
   labels {
-    label = "challenge"
-    value = "second"
+    label = "stack"
+    value = "lamp"
   }
 }
