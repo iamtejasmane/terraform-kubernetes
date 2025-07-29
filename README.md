@@ -1,2 +1,2 @@
-# terraform-kubernetes
-This is a Kubernetes app deployment using Terraform
+# Terraform-Kubernetes
+This is a Kubernetes app deployment using Terraform.
